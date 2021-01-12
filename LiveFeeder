@@ -1,0 +1,275 @@
+#!/bin/bash
+
+myBASEDIR=/home/debian
+#LOGFILE=$BASEDIR/log
+
+mylogcfile=$myBASEDIR/log_c.txt
+mylogvfile=$myBASEDIR/log_v.txt
+mylog3file=$myBASEDIR/log_3.txt
+myGUI=$myBASEDIR/gui.py
+
+EMAILHEADER=$BASEDIR/bin/email_header
+EMAILADDRESSES="jkkamuab@ncsu.edu jpdrawba@ncsu.edu crdurand@ncsu.edu jbricca@ncsu.edu shall5@ncsu.edu mofrinsk@ncsu.edu"
+
+PAUSE_PERIOD=1                          # seconds
+FLOW_RATE=1.667                         # mL/second
+#### WIFI CHECK LED IS P8_45
+TANK_MOTORS_SET=( 'P8_11 P8_8 P8_7 P8_9' 'P8_28 P8_14 P8_12 P8_30' 'P8_29 P8_34 P8_32 P8_27' 'P9_13 P9_23 P9_25 P9_11' 'P9_18 P9_24 P9_22 P9_27' )
+FEED_MOTOR_SET=( 'P8_10 P8_17' 'P8_16 P8_18' 'P8_35 P8_33' 'P9_21 P9_17' 'P9_26 P9_30' )
+FLUSH_MOTOR_SET=( 'P8_15' 'P8_26' 'P8_31' 'P9_15' 'P9_42' )
+
+MOTORS=( ${TANK_MOTORS_SET[*]} ${FEED_MOTOR_SET[*]} ${FLUSH_MOTOR_SET[*]} )
+
+trap cleanup EXIT
+
+timestamp() {
+	echo "----------------------------------------------------------------"
+	date +%T
+	echo "----------------------------------------------------------------"
+}
+
+email() {
+	cat $EMAILHEADER - | sendmail $EMAILADDRESSES
+}
+
+cleanup() {
+	echo ""
+	timestamp
+	echo "Terminating Feed"
+	echo "Resetting Feeder"
+
+	# added in
+	echo "Opening GUI"
+	python3 GUI.py
+	# end of added code
+	
+	for motor in ${MOTORS[*]} ; do
+		config-pin $motor low
+	done
+}
+
+cycle_timestamp() { # {1:time delta}
+        CYCLE_TIME_ELAPSED=`echo "scale=1;$CYCLE_TIME_ELAPSED + $1" | bc`
+        CYCLE_TIME_LEFT=`echo "scale=1;$CYCLE_TIME_LEFT - $1" | bc`
+	echo "Cycle Time Elapsed: ${CYCLE_TIME_ELAPSED} seconds"
+	echo "Time Left in Cycle(Feed Interval): ${CYCLE_TIME_LEFT} seconds"$'\n\n'
+}
+
+power_motors() { # {1:motor 1} {2:motor 2} {3:on time}
+	config-pin $1 high
+	config-pin $2 high
+	sleep $3
+	config-pin $1 low
+	config-pin $2 low
+}
+
+feed_tank() { # {1:tank number}
+	echo "Feeding Tank $(($1 + 1))"
+### Insert text here
+	ARTEMIA_VOLUME=`echo "scale=3;$ARTEMIA_VOLUME - ($TANKS_TIME * $FLOW_RATE)" | bc`
+	VOLUME_CHECK=`echo "scale=3;$ARTEMIA_VOLUME - ($FLUSH_FOOD_TIME * $FLOW_RATE)" | bc`
+
+
+# TODO: Move this check to before calling feed cycle
+	if [ ${VOLUME_CHECK%\.*} -le 350 ];
+	then
+		echo "Error Check Fail: Low Artemia Volume"
+       		echo "Refill Artemia containers for feeding and update input volume"
+		echo "Press 'Ctrl^C to stop program'"
+		echo ""
+		echo "ERROR CHECK FAIL: LOW ARTEMIA VOLUME. SEE WHERE AND WHEN IT HAPPENED ON LOG FILE." | cat - $LOGFILE | email
+
+		exit
+	fi
+	
+	power_motors ${FEED_MOTOR[0]} ${TANK_MOTORS[$1]} $TANKS_TIME
+
+	echo "Feed Complete"
+	echo "Approximately ${ARTEMIA_VOLUME}mL of Artemia fluid remaining for this treatment"
+	cycle_timestamp $TANKS_TIME
+}
+
+flush_tank() { # {1:tank number}
+	echo "Flushing Tank $(($1 + 1))"
+
+	power_motors $FLUSH_MOTOR ${TANK_MOTORS[$1]} $FLUSH_TIME
+        
+        echo "Flush Complete"
+	cycle_timestamp $FLUSH_TIME
+}
+
+flush_food() {
+	echo "Flushing Artemia"
+	
+	power_motors $FLUSH_MOTOR ${FEED_MOTOR[1]} $FLUSH_FOOD_TIME
+        
+        echo "Flush Complete"
+	cycle_timestamp $FLUSH_FOOD_TIME
+}
+
+prep_food() {
+	echo "Prepping Artemia"
+	ARTEMIA_VOLUME=`echo "scale=3;$ARTEMIA_VOLUME - ($FLUSH_FOOD_TIME * $FLOW_RATE)" | bc`
+
+	power_motors ${FEED_MOTOR[0]} ${TANK_MOTORS[0]} $FLUSH_FOOD_TIME
+
+	echo "Prep Complete"
+        echo "Approximately ${ARTEMIA_VOLUME}mL of Artemia fluid remaining for this treatment"
+	cycle_timestamp $FLUSH_FOOD_TIME
+}
+
+feed() {
+	CYCLE_TIME_LEFT=$CYCLE_TIME
+        CYCLE_TIME_ELAPSED=0
+
+	prep_food
+
+	for tank in {0..3} ; do
+		feed_tank $tank
+		sleep $PAUSE_PERIOD
+		if [ $tank -eq 3 ] ; then
+			flush_food
+			sleep $PAUSE_PERIOD
+		fi
+		flush_tank $tank
+		sleep $PAUSE_PERIOD
+	done
+
+	echo "Cycle Completed"
+}
+
+prompt() { # {1:variable name} {2:min} {3:max} {4:initial prompt string} {5:repeated prompt string}
+	echo $4
+	while read -p "Enter a whole number between $2 and $3"$'\n' tmp ; [[ ! $tmp =~ ^-?[0-9]+$ ]] || [ $tmp -lt $2 ] || [ $tmp -gt $3 ] ; do
+		echo "Invalid input: '$tmp'"
+	done
+	eval $1=$tmp
+}
+
+getcdata() {
+    while IFS=' ' read -r tnk1 tnk2 tnk3 tnk4 tnk5
+    do
+	INPUT_CONCENTRATIONS[0]=$tnk1
+	INPUT_CONCENTRATIONS[1]=$tnk2
+	INPUT_CONCENTRATIONS[2]=$tnk3
+	INPUT_CONCENTRATIONS[3]=$tnk4
+	INPUT_CONCENTRATIONS[4]=$tnk5
+	
+    done < $mylogcfile    
+}
+
+getvdata() {
+    while IFS=' ' read -r cne1 cne2 cne3 cne4 cne5
+    do
+        ARTEMIA_VOLUMES[0]=$cne1
+        ARTEMIA_VOLUMES[1]=$cne2
+        ARTEMIA_VOLUMES[2]=$cne3
+        ARTEMIA_VOLUMES[3]=$cne4
+        ARTEMIA_VOLUMES[4]=$cne5
+	
+    done < $mylogvfile    
+}
+
+get3data() {
+    while IFS=' ' read -r beginfeed feedspercone feedintervals targetc maxd sad
+    do
+        START_DELAY=$beginfeed
+        NUM_CYCLES=$feedspercone
+        FEED_INTERVAL=($feedintervals)
+        TARGET_CONCENTRATION=$targetc
+        MAX_DISTANCE=$maxd #(in feet)
+	SALINE_ART_DISTANCE=$sad #(in feet)
+	
+    done < $mylog3file    
+}
+
+echo "----------------------------------------------------------------"
+echo "----------------------------------------------------------------"
+echo "Starting Automated LiveFeeder"
+echo "----------------------------------------------------------------"
+echo "----------------------------------------------------------------"
+
+getcdata
+getvdata
+get3data
+i=0
+
+FLUSH_TIME=`echo "scale=3;$MAX_DISTANCE * 1.29 * 2 + 5" | bc`
+FLUSH_FOOD_TIME=`echo "scale=3;$SALINE_ART_DISTANCE * 1.29 * 2" | bc`
+
+
+for container in {1..5} ; do
+	
+	TANKS_TIMES+=( `echo "scale=3;(10000 * $TARGET_CONCENTRATION) / ($FLOW_RATE * ${INPUT_CONCENTRATIONS[$i]})" | bc` )
+	TOTAL_FEED_TIMES+=( `echo "scale=3;(${TANKS_TIMES[$i]} * 4) + ($FLUSH_TIME * 4) + ($FLUSH_FOOD_TIME * 2)" | bc` )
+
+	i=$((i+1))
+done
+
+START_DELAY_MINUTES=$(($START_DELAY * 60))
+CYCLE_TIME=$(($FEED_INTERVAL * 60))
+
+for totals in {0..4} ; do
+	if [ $CYCLE_TIME -le $((${TOTAL_FEED_TIMES[$totals]%.*} + 1)) ] ; then
+		CYCLE_TIME=$((${TOTAL_FEED_TIMES[$totals]%.*} + 1))
+		FEED_INTERVAL=`echo "$CYCLE_TIME / 60" | bc`
+	fi
+done
+
+
+(
+echo "----------------------------------------------------------------"
+echo "----------------------------------------------------------------"
+date
+echo "----------------------------------------------------------------"
+echo "----------------------------------------------------------------"
+echo ""
+echo "Input Volumes: ${ARTEMIA_VOLUMES[*]}(mL)"
+echo "Input Concentrations: ${INPUT_CONCENTRATIONS[*]} (Art/mL)"
+echo "Target Concentration: ${TARGET_CONCENTRATION} Art/mL"
+echo "Feed Interval: ${FEED_INTERVAL} minutes [${CYCLE_TIME} seconds]"
+echo "Maximum Tubing Distance: ${MAX_DISTANCE} feet"
+echo "Number of Cycles: $NUM_CYCLES"
+echo "Flush Time: ${FLUSH_TIME} seconds"
+echo "Artemia Flush Time: ${FLUSH_FOOD_TIME} seconds "
+echo "Tank Times: ${TANKS_TIMES[*]} (seconds)"
+echo "Total Feed Times: ${TOTAL_FEED_TIMES[*]} (seconds)"
+echo ""
+echo "----------------------------------------------------------------"
+echo "----------------------------------------------------------------"
+echo ""
+echo "Starting Feed in ${START_DELAY} minutes"
+echo ""
+
+echo $"A new feed has been started the feed information is on the attached log file. You can access this log at any time by accessing the beagle bone." | cat - $LOGFILE | email
+
+
+sleep $START_DELAY_MINUTES
+
+for motor in ${MOTORS[*]} ; do
+	echo "Initing GPIO $motor"
+	config-pin $motor out
+	config-pin $motor low
+done
+
+while let "NUM_CYCLES--" ; do
+	timestamp
+	echo "Starting Cycle ($NUM_CYCLES Remaining)"
+	for treatment in {0..4} ; do
+		(
+		ARTEMIA_VOLUME=${ARTEMIA_VOLUMES[$treatment]}
+		TANKS_TIME=${TANKS_TIMES[$treatment]}
+		TANK_MOTORS=( ${TANK_MOTORS_SET[$treatment]} )
+		FEED_MOTOR=( ${FEED_MOTOR_SET[$treatment]} )
+		FLUSH_MOTOR=( ${FLUSH_MOTOR_SET[$treatment]} )	
+		feed | sed "s/.*/Treatment $(($treatment + 1)): &/"
+		ARTEMIA_VOLUMES[$treatment]=$ARTEMIA_VOLUME
+		) &
+	done
+	if [ $NUM_CYCLES -ne 0 ] ; then
+		sleep $CYCLE_TIME &
+	fi
+	wait
+done
+) | tee -a $LOGFILE
+echo "Your cycless have finished. Here is a log of all the feeds. You can access this log at any time by accessing the beagle bone." | cat - $LOGFILE | email

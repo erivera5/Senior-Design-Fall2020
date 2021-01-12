@@ -1,0 +1,17 @@
+#!/bin/bash
+
+
+PIN=P8_45
+
+# Do "sudo crontab -e" and add "@reboot /home/debian/bin/wifi_service"
+
+config-pin $PIN out
+while sleep 5 ; do
+	if `ping -c 1 8.8.8.8 &> /dev/null` ; then
+		config-pin $PIN low
+	else
+		config-pin $PIN high
+	fi
+done
+
+#If there is no connection the pin will go high

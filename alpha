@@ -1,0 +1,101 @@
+#!/bin/bash
+
+INPUT_CONCENTRATIONS=${@:1:4}		# artemia/mL
+TARGET_CONCENTRATION=${5:-6}		# artemia/mL . defaults to 6
+FEED_INTERVAL=${6:-10}			# minutes. defaults to 10
+MAX_DISTANCE=${7:-30}			# feet . defaults to 30
+NUM_CYCLES=${8:-1}			# Iterations, -1 for infinite
+
+GPIODIR="/sys/class/gpio/"		# Path to GPIO files
+PAUSE_PERIOD=1				# seconds
+TANK_MOTORS=(P8_7 P8_8 P8_10 P8_9)	# gpio{66 67 68 69} tank{1 2 3 4}
+FEED_MOTOR=(P8_12 P8_11)		# gpio{44 45} direction{Forwards Reverse}
+FLUSH_MOTOR=P8_14			# gpio{26}
+
+FLOW_RATE=1.667				# mL/second
+FLUSH_FOOD_TIME=6.29			# seconds
+
+FLUSH_TIME=`echo "scale=3;$MAX_DISTANCE * 1.29 + 5" | bc`
+CYCLE_TIME=`echo "scale=3;$FEED_INTERVAL * 60" | bc`
+
+for concentration in $INPUT_CONCENTRATIONS ; do
+	TANK_TIMES+=("`echo "scale=3;(10000 * $TARGET_CONCENTRATION) / ($FLOW_RATE * $concentration)" | bc`")
+done
+
+trap cleanup SIGTERM SIGINT
+
+cleanup() {
+	echo ""
+	echo "Resetting Feeder"
+	for motor in ${TANK_MOTORS[*]} ${FEED_MOTOR[*]} $FLUSH_MOTOR ; do
+		config-pin $motor low
+	done
+}
+
+feed_tank() { # {1:tank number}
+	echo "Feeding tank $(($1 + 1))"
+	config-pin ${FEED_MOTOR[0]} high
+	config-pin ${TANK_MOTORS[$1]} high
+	sleep ${TANK_TIMES[$1]}
+	config-pin ${FEED_MOTOR[0]} low
+	config-pin ${TANK_MOTORS[$1]} low
+}
+
+flush_tank() { # {1:tank number}
+	echo "Flushing tank $(($1 + 1))"
+	config-pin $FLUSH_MOTOR high
+	config-pin ${TANK_MOTORS[$1]} high
+	sleep $FLUSH_TIME
+	config-pin $FLUSH_MOTOR low
+	config-pin ${TANK_MOTORS[$1]} low
+}
+
+flush_food() {
+	echo "Flushing Artemia"
+	config-pin $FLUSH_MOTOR high
+	config-pin ${FEED_MOTOR[1]} high
+	sleep $FLUSH_FOOD_TIME
+	config-pin $FLUSH_MOTOR low
+	config-pin ${FEED_MOTOR[1]} low
+}
+
+feed() {
+	for tank in 0 1 2 ; do
+		feed_tank $tank
+		sleep $PAUSE_PERIOD
+		flush_tank $tank
+		sleep $PAUSE_PERIOD
+	done
+
+	feed_tank 3
+	sleep $PAUSE_PERIOD
+	flush_food
+	sleep $PAUSE_PERIOD
+	flush_tank 3
+	echo "Cycle Done"
+}
+
+echo "----------------------------------------------------------------"
+echo "----------------------------------------------------------------"
+echo "Input Concentrations: ${INPUT_CONCENTRATIONS[*]} (A/mL)"
+echo "Target Concentration: ${TARGET_CONCENTRATION} (A/mL)"
+echo "Feed Interval: ${FEED_INTERVAL}min [${CYCLE_TIME}s]"
+echo "Max Distance: ${MAX_DISTANCE}ft"
+echo "Number of Cycles: $NUM_CYCLES"
+echo "Flush Time: ${FLUSH_TIME}s"
+echo "Tank Times: ${TANK_TIMES[*]} (s)"
+echo ""
+
+for motor in ${TANK_MOTORS[*]} ${FEED_MOTOR[*]} $FLUSH_MOTOR ; do
+	echo "Initing GPIO $motor"
+	config-pin $motor low
+	config-pin $motor out
+done
+
+echo ""
+
+while let "NUM_CYCLES--" ; do
+	echo "Starting Cycle; $NUM_CYCLES Remaining"
+	feed &
+	sleep $CYCLE_TIME
+done

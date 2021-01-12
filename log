@@ -1,0 +1,121 @@
+----------------------------------------------------------------
+----------------------------------------------------------------
+Thu Nov  5 18:03:30 EST 2020
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+Input Volumes: 1 1 1 1 1(mL)
+Input Concentrations: 1 1 1 1 1 (Art/mL)
+Target Concentration: 1 Art/mL
+Feed Interval: 1 minutes [60 seconds]
+Maximum Tubing Distance: 1 feet
+Number of Cycles: 1
+Flush Time: 7.58 seconds
+Artemia Flush Time: 2.58 seconds 
+Tank Times:  (seconds)
+Total Feed Times:  (seconds)
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+
+Starting Feed in 1 minutes
+
+Initing GPIO P8_11
+Initing GPIO P8_8
+Initing GPIO P8_7
+Initing GPIO P8_9
+Initing GPIO P8_28
+Initing GPIO P8_14
+Initing GPIO P8_12
+Initing GPIO P8_30
+Initing GPIO P8_29
+Initing GPIO P8_34
+Initing GPIO P8_32
+Initing GPIO P8_27
+Initing GPIO P9_13
+Initing GPIO P9_23
+Initing GPIO P9_25
+Initing GPIO P9_11
+Initing GPIO P9_18
+Initing GPIO P9_24
+Initing GPIO P9_22
+Initing GPIO P9_27
+Initing GPIO P8_10
+Initing GPIO P8_17
+Initing GPIO P8_16
+Initing GPIO P8_18
+Initing GPIO P8_35
+Initing GPIO P8_33
+Initing GPIO P9_21
+Initing GPIO P9_17
+Initing GPIO P9_26
+Initing GPIO P9_30
+Initing GPIO P8_15
+Initing GPIO P8_26
+Initing GPIO P8_31
+Initing GPIO P9_15
+Initing GPIO P9_42
+----------------------------------------------------------------
+18:04:30
+----------------------------------------------------------------
+Starting Cycle (0 Remaining)
+Treatment 5: Prepping Artemia
+Treatment 5: Prep Complete
+Treatment 5: Approximately -3.300mL of Artemia fluid remaining for this treatment
+Treatment 5: Cycle Time Elapsed: 2.58 seconds
+Treatment 5: Time Left in Cycle(Feed Interval): 57.42 seconds
+Treatment 5: 
+Treatment 5: 
+Treatment 5: Feeding Tank 1
+Treatment 5: Error Check Fail: Low Artemia Volume
+Treatment 5: Refill Artemia containers for feeding and update input volume
+Treatment 5: Press 'Ctrl^C to stop program'
+Treatment 5: 
+Treatment 1: Prepping Artemia
+Treatment 1: Prep Complete
+Treatment 1: Approximately -3.300mL of Artemia fluid remaining for this treatment
+Treatment 1: Cycle Time Elapsed: 2.58 seconds
+Treatment 1: Time Left in Cycle(Feed Interval): 57.42 seconds
+Treatment 1: 
+Treatment 1: 
+Treatment 1: Feeding Tank 1
+Treatment 1: Error Check Fail: Low Artemia Volume
+Treatment 1: Refill Artemia containers for feeding and update input volume
+Treatment 1: Press 'Ctrl^C to stop program'
+Treatment 1: 
+Treatment 2: Prepping Artemia
+Treatment 2: Prep Complete
+Treatment 2: Approximately -3.300mL of Artemia fluid remaining for this treatment
+Treatment 2: Cycle Time Elapsed: 2.58 seconds
+Treatment 2: Time Left in Cycle(Feed Interval): 57.42 seconds
+Treatment 2: 
+Treatment 2: 
+Treatment 2: Feeding Tank 1
+Treatment 2: Error Check Fail: Low Artemia Volume
+Treatment 2: Refill Artemia containers for feeding and update input volume
+Treatment 2: Press 'Ctrl^C to stop program'
+Treatment 2: 
+Treatment 4: Prepping Artemia
+Treatment 4: Prep Complete
+Treatment 4: Approximately -3.300mL of Artemia fluid remaining for this treatment
+Treatment 4: Cycle Time Elapsed: 2.58 seconds
+Treatment 4: Time Left in Cycle(Feed Interval): 57.42 seconds
+Treatment 4: 
+Treatment 4: 
+Treatment 4: Feeding Tank 1
+Treatment 4: Error Check Fail: Low Artemia Volume
+Treatment 4: Refill Artemia containers for feeding and update input volume
+Treatment 4: Press 'Ctrl^C to stop program'
+Treatment 4: 
+Treatment 3: Prepping Artemia
+Treatment 3: Prep Complete
+Treatment 3: Approximately -3.300mL of Artemia fluid remaining for this treatment
+Treatment 3: Cycle Time Elapsed: 2.58 seconds
+Treatment 3: Time Left in Cycle(Feed Interval): 57.42 seconds
+Treatment 3: 
+Treatment 3: 
+Treatment 3: Feeding Tank 1
+Treatment 3: Error Check Fail: Low Artemia Volume
+Treatment 3: Refill Artemia containers for feeding and update input volume
+Treatment 3: Press 'Ctrl^C to stop program'
+Treatment 3: 
