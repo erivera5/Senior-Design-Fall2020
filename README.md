@@ -15,11 +15,18 @@ Our sponsor, an aquaculture researcher, needed an updated graphical user interfa
 
 The initial interface so that rather than a series of command-line prompts, the user can easily manipulate the desired artemia concentrations, liquid volumes in cones, feeding rate, start delay, number of feeding cycles, and feeding intervals using color-coded sliders and drop-down menus. 
 
-(photo of what that's describing goes here)
+
+<p align="center">
+  <img src="https://i.imgur.com/fiPbvkh.png" width="1074" height="572" />
+</p>
+
 
 This interface also has the capability of plotting previous feedings to a graph. The number of recent feedings to be plotted can be selected from 5, 10, or 20 and the GUI will produce the desired graph accordingly.
 
-(photo of what that's describing goes here)
+
+<p align="center">
+  <img src="https://i.imgur.com/AvhhBdF.png" width="1074" height="572" />
+</p>
 
 
 ### LiveFeeder 2.0
