@@ -37,5 +37,5 @@ LiveFeeder is the name of the program used to run the pump-based feeding system.
 
 
 <p align="center">
-  <img src="http://some_place.com/image.png" />
+  <img src="https://i.imgur.com/IbMCncM.png" />
 </p>
