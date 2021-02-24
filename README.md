@@ -33,3 +33,9 @@ LiveFeeder is the name of the program used to run the pump-based feeding system.
 ## Demo
 
 (an unlisted youtube link will go here)
+
+
+
+<p align="center">
+  <img src="http://some_place.com/image.png" />
+</p>
