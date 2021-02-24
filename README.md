@@ -1,10 +1,35 @@
 # Artemia Feeder: Advancing the Design for Fish Larvaeculture
 
 ## Background:
+Our sponsor, an aquaculture researcher, needed an updated graphical user interface to accurately and automatically feed his supply of striped bass larvae. Our design improved upon the design of a previous senior design team’s user interface by making it easier to control the feeding system without jumping through numerous hoops, such as running the original LiveFeeder through a series of command line prompts in Terminal. The GUI, written in Python, incorporates graphs and sliders in its design in order to display the information of past feedings, while also enhancing the user-friendliness of the design.
+
+(senior design poster here)
+
+## Design Highlights
+
+### Graphical User Interface
+
+The initial interface so that rather than a series of command-line prompts, the user can easily manipulate the desired artemia concentrations, liquid volumes in cones, feeding rate, start delay, number of feeding cycles, and feeding intervals using color-coded sliders and drop-down menus. 
+
+(photo of what that's describing goes here)
+
+This interface also has the capability of plotting previous feedings to a graph. The number of recent feedings to be plotted can be selected from 5, 10, or 20 and the GUI will produce the desired graph accordingly.
+
+(photo of what that's describing goes here)
 
 
-In this team project, our sponsor was an aquaculture researcher who needed an updated graphical user interface to accurately and automatically feed his supply of striped bass larvae. Our design improved upon the design of a previous senior design team's user interface by making it easier to control the feeding system without jumping through numerous hoops, such as running the original LiveFeeder through a series of command line prompts in Terminal. Our graphical user interface, created with Python, incorporates graphs and sliders in its design in order to display the information of past feedings, while also enhancing the user-friendliness of the design.
+### LiveFeeder 2.0
 
-Inputs to the system can be generated and written to three log files using the GUI.py file. The LiveFeeder program is updated to read these three log files and write the requested inputs to variables needed to run the pump-based feeding system, such as data pertaining to concentrations and volumes for each of the five tanks used for feeding fish.
+LiveFeeder is the name of the program used to run the pump-based feeding system. This program was updated so that it can be implemented with our GUI. The changes in the source code allow for files produced by the interface (which contained sets of numbers corresponding to selected inputs) to be read so that the values contained within those files are written to variables defined in LiveFeeder. The feeding pumps will then run using these values.
 
-The capability of checking the concentration using an IR detector circuit was descoped from the project due to issues such as time constraints and laboratory access, which were both affected by the COVID-19 pandemic.
+(show photo of livefeeder)
+
+
+### Concentration Checker (de-scoped)
+
+(describe how this would have operated, then post schematic)
+
+
+## Demo
+
+(an unlisted youtube link will go here)
