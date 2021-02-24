@@ -3,7 +3,7 @@
 ## Background:
 Our sponsor, an aquaculture researcher, needed an updated graphical user interface to accurately and automatically feed his supply of striped bass larvae. Our design improved upon the design of a previous senior design team’s user interface by making it easier to control their pump-based feeding system without jumping through numerous hoops, such as running the original LiveFeeder (a program that initiates the feeding system) through a series of command line prompts in Terminal. The GUI, written in Python, incorporates graphs and sliders in its design in order to display the information of past feedings, while also enhancing the user-friendliness of the design.
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/aQYh8qm"  ><a href="//imgur.com/a/aQYh8qm"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+![alt text](https://imgur.com/a/2UF9Urp)
 
 ## Design Highlights
 
