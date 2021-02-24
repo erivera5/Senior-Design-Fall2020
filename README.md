@@ -17,7 +17,7 @@ The initial interface so that rather than a series of command-line prompts, the 
 
 
 <p align="center">
-  <img src="https://i.imgur.com/fiPbvkh.png" width="1074" height="572" />
+  <img src="https://i.imgur.com/fiPbvkh.png" width="806" height="429" />
 </p>
 
 
@@ -25,7 +25,7 @@ This interface also has the capability of plotting previous feedings to a graph.
 
 
 <p align="center">
-  <img src="https://i.imgur.com/AvhhBdF.png" width="1074" height="572" />
+  <img src="https://i.imgur.com/AvhhBdF.png" width="806" height="429" />
 </p>
 
 
