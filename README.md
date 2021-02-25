@@ -35,6 +35,10 @@ LiveFeeder is the name of the program used to run the pump-based feeding system.
 
 (show photo of livefeeder)
 
+<p align="center">
+  <img src="https://i.imgur.com/P3nnH30.png" width="806" height="429" />
+</p>
+
 
 ### Concentration Checker (de-scoped)
 
