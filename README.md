@@ -33,8 +33,6 @@ This interface also has the capability of plotting previous feedings to a graph.
 
 LiveFeeder is the name of the program used to run the pump-based feeding system. This program was updated so that it can be implemented with our GUI. The changes in the source code allow for files produced by the interface (which contained sets of numbers corresponding to selected inputs) to be read so that the values contained within those files are written to variables defined in LiveFeeder. The feeding pumps will then run using these values.
 
-(show photo of livefeeder)
-
 <p align="center">
   <img src="https://i.imgur.com/P3nnH30.png" width="806" height="429" />
 </p>
