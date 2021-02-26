@@ -5,7 +5,7 @@ Our sponsor, an aquaculture researcher, needed an updated graphical user interfa
 
 
 <p align="center">
-  <img src="https://i.imgur.com/8LKCdiW.png" width="579" height="434" />
+  <img src="https://i.imgur.com/8LKCdiW.png" width="539" height="415" />
 </p>
 
 
@@ -13,6 +13,9 @@ Our sponsor, an aquaculture researcher, needed an updated graphical user interfa
 
 ### Overall System Design
 
+<p align="center">
+  <img src="https://i.imgur.com/XLUyd7V.png" width="579" height="434" />
+</p>
 
 
 ### Graphical User Interface
