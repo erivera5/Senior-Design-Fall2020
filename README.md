@@ -11,6 +11,10 @@ Our sponsor, an aquaculture researcher, needed an updated graphical user interfa
 
 ## Design Highlights
 
+### Overall System Design
+
+
+
 ### Graphical User Interface
 
 The initial interface so that rather than a series of command-line prompts, the user can easily manipulate the desired artemia concentrations, liquid volumes in cones, feeding rate, start delay, number of feeding cycles, and feeding intervals using color-coded sliders and drop-down menus. 
@@ -38,13 +42,8 @@ LiveFeeder is the name of the program used to run the pump-based feeding system.
 </p>
 
 
-### Concentration Checker (de-scoped)
+### Concentration Checker (descoped)
 
-(describe how this would have operated, then post schematic)
-
-
-## Demo
-
-(an unlisted youtube link will go here)
+An IR emitter/detector circuit was planned to be included in this project, but had to be descoped. This addition would have measured the amount of artemia flowing through the tubes in the pumping system, while the MCU would receive this amount via the amount of ADC voltage produced by an LED in the concentration checker circuit. This ADC voltage would have been read through the use of a Shell program designed to measure the voltage read by a pin from the microcontroller, which was in turn connected to the circuit. This feature had to be descoped along with the circuit.
 
 
