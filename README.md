@@ -47,6 +47,6 @@ LiveFeeder is the name of the program used to run the pump-based feeding system.
 
 ### Concentration Checker (descoped)
 
-A prototype for an IR emitter/detector circuit was created and planned to be included in this project, but had to be descoped. This mechanism would have measured the amount of artemia flowing through the tubes in the pumping system, while the MCU would receive this amount via the amount of ADC voltage produced by an LED in the concentration checker circuit. This ADC voltage would have been read through the use of a Shell program designed to measure the voltage read by a pin from the microcontroller, which was in turn connected to the circuit.
+A prototype for an IR emitter/detector circuit was created and planned to be included in this project, but was ultimately descoped. This mechanism would have measured the amount of artemia flowing through the tubes in the pumping system, while the MCU would receive this amount via the amount of ADC voltage produced by an LED in the concentration checker circuit. This ADC voltage would have been read through the use of a Shell program designed to measure the voltage read by a pin from the microcontroller, which was in turn connected to the circuit.
 
 
